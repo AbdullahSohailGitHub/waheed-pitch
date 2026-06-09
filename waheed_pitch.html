@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Muhammad Waheed — Shopify Architect</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#0A0A0F;color:#fff;height:100vh;overflow:hidden;user-select:none}
+  .deck{width:100%;height:100vh;position:relative}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:5vh 7vw;opacity:0;pointer-events:none;transition:opacity 0.6s ease}
+  .slide.active{opacity:1;pointer-events:all}
+  .nav{position:fixed;bottom:3vh;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100}
+  .dot{width:8px;height:8px;border-radius:50%;background:#333;cursor:pointer;transition:all 0.3s}
+  .dot.active{background:#C9A84C;transform:scale(1.4)}
+  .arrows{position:fixed;bottom:3vh;right:5vw;display:flex;gap:12px;z-index:100}
+  .arr{background:transparent;border:1px solid #333;color:#888;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+  .arr:hover{border-color:#C9A84C;color:#C9A84C}
+  .slide-num{position:fixed;top:3vh;right:5vw;font-size:12px;color:#444;letter-spacing:2px;z-index:100}
+  .gold-bar{position:fixed;top:0;left:0;right:0;height:3px;background:#C9A84C;z-index:200}
+  .label{font-size:11px;letter-spacing:4px;color:#C9A84C;text-transform:uppercase;margin-bottom:1.2rem;font-weight:500}
+  .h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:700;line-height:1.1;margin-bottom:1.2rem;color:#fff}
+  .h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;line-height:1.2;color:#fff;margin-bottom:0.8rem}
+  .sub{font-size:clamp(0.85rem,1.5vw,1rem);color:#8888AA;line-height:1.6;max-width:600px}
+  .gold{color:#C9A84C}
+  .accent-line{width:60px;height:3px;background:#C9A84C;margin-bottom:1.4rem}
+  .stats{display:flex;gap:16px;margin-top:2.5rem;flex-wrap:wrap}
+  .stat{background:#13131A;border:1px solid #C9A84C33;border-radius:10px;padding:14px 22px;min-width:100px}
+  .stat-num{font-size:1.8rem;font-weight:700;color:#C9A84C;line-height:1}
+  .stat-label{font-size:11px;color:#666;margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:900px;margin-top:1.8rem}
+  .card{background:#13131A;border:1px solid #1A1A28;border-radius:12px;padding:24px 20px}
+  .card-icon{font-size:1.6rem;margin-bottom:1rem;color:#C9A84C}
+  .card h3{font-size:1rem;font-weight:600;color:#fff;margin-bottom:8px}
+  .card p{font-size:0.82rem;color:#8888AA;line-height:1.6}
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:860px;margin-top:1.8rem}
+  .step{background:#13131A;border:1px solid #1A1A28;border-radius:12px;padding:20px 18px;display:flex;gap:14px;align-items:flex-start}
+  .step-num{background:#C9A84C;color:#0A0A0F;font-size:11px;font-weight:700;min-width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;letter-spacing:1px;flex-shrink:0}
+  .step-content h3{font-size:0.95rem;font-weight:600;color:#fff;margin-bottom:5px}
+  .step-content p{font-size:0.8rem;color:#8888AA;line-height:1.55}
+  .brands{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:860px;margin-top:1.8rem}
+  .brand{background:#13131A;border:1px solid #1A1A28;border-radius:10px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+  .brand-dot{width:8px;height:8px;border-radius:50%;background:#C9A84C;margin-top:5px;flex-shrink:0}
+  .brand-name{font-size:0.95rem;font-weight:600;color:#fff;margin-bottom:3px}
+  .brand-tag{font-size:0.75rem;color:#8888AA}
+  .cta-cards{display:flex;gap:16px;margin-top:2rem;flex-wrap:wrap}
+  .cta-card{background:#13131A;border:1px solid #C9A84C55;border-radius:12px;padding:20px 24px;flex:1;min-width:200px}
+  .cta-card h3{font-size:1rem;font-weight:600;color:#C9A84C;margin-bottom:6px}
+  .cta-card p{font-size:0.82rem;color:#8888AA}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  .slide.active .label{animation:fadeUp 0.5s 0.05s both}
+  .slide.active .h1{animation:fadeUp 0.5s 0.15s both}
+  .slide.active .h2{animation:fadeUp 0.5s 0.15s both}
+  .slide.active .accent-line{animation:fadeUp 0.5s 0.25s both}
+  .slide.active .sub{animation:fadeUp 0.5s 0.3s both}
+  .slide.active .stats{animation:fadeUp 0.5s 0.35s both}
+  .slide.active .cards{animation:fadeUp 0.55s 0.3s both}
+  .slide.active .steps{animation:fadeUp 0.55s 0.3s both}
+  .slide.active .brands{animation:fadeUp 0.55s 0.3s both}
+  .slide.active .cta-cards{animation:fadeUp 0.55s 0.35s both}
+  .circle-deco{position:absolute;right:-80px;top:-100px;width:420px;height:420px;border-radius:50%;border:1px solid #C9A84C18;pointer-events:none}
+  .circle-deco2{position:absolute;right:20px;top:-40px;width:280px;height:280px;border-radius:50%;border:1px solid #C9A84C10;pointer-events:none}
+  .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:2rem}
+  .logo-icon{width:38px;height:38px;background:#C9A84C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#0A0A0F}
+  .logo-name{font-size:13px;letter-spacing:3px;color:#C9A84C;text-transform:uppercase;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="gold-bar"></div>
+<div class="slide-num" id="slideNum">01 / 05</div>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: HERO -->
+  <div class="slide active" id="s0">
+    <div class="circle-deco"></div>
+    <div class="circle-deco2"></div>
+    <div class="logo-row">
+      <div class="logo-icon">S</div>
+      <div class="logo-name">Muhammad Waheed</div>
+    </div>
+    <div class="label">Shopify Liquid &amp; Motion Architect</div>
+    <div class="h1">Luxury storefronts.<br><span class="gold">Built to convert.</span></div>
+    <div class="accent-line"></div>
+    <div class="sub">Custom H1–H7 section architecture, motion-first builds, and 15 years of Shopify expertise — all in one specialist.</div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Years</div></div>
+      <div class="stat"><div class="stat-num">190+</div><div class="stat-label">Projects</div></div>
+      <div class="stat"><div class="stat-num">30min</div><div class="stat-label">Free Call</div></div>
+      <div class="stat"><div class="stat-num">2 mo</div><div class="stat-label">Free Support</div></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM -->
+  <div class="slide" id="s1">
+    <div class="label">The challenge</div>
+    <div class="h2">Most Shopify developers build stores.<br><span class="gold">I build luxury storefronts.</span></div>
+    <div class="accent-line"></div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">&#8918;</div>
+        <h3>Generic theme shortcuts</h3>
+        <p>Most devs drag-drop theme blocks. H1–H7 section architecture requires bespoke Liquid components built from scratch.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#9889;</div>
+        <h3>Performance sacrificed for design</h3>
+        <p>Heavy motion libraries kill load speed. Native Shopify animation hooks deliver the same result — fast.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#10022;</div>
+        <h3>Luxury feel lost in code</h3>
+        <p>High-end aesthetics demand scoped CSS, intentional motion, and architecture that feels considered at every scroll depth.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: APPROACH -->
+  <div class="slide" id="s2">
+    <div class="label">My build approach</div>
+    <div class="h2">Architecture-first.<br><span class="gold">Every section built to last.</span></div>
+    <div class="accent-line"></div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>Section schema mapping</h3>
+          <p>H1–H7 architecture fully mapped before a single line of code is written. No surprises mid-build.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Native motion integration</h3>
+          <p>Animations via Shopify's native hooks — zero heavy libraries, silky performance at every breakpoint.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Dev theme workflow</h3>
+          <p>All work on a forked dev theme. Live store is never touched until staging review is approved.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Outcome-based delivery</h3>
+          <p>Every build measured against load time, Core Web Vitals, and conversion — not just aesthetics.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: PORTFOLIO -->
+  <div class="slide" id="s3">
+    <div class="label">Proven results</div>
+    <div class="h2">Luxury &amp; premium DTC brands<br><span class="gold">built on bespoke Shopify architecture.</span></div>
+    <div class="accent-line"></div>
+    <div class="brands">
+      <div class="brand"><div class="brand-dot"></div><div><div class="brand-name">naadam.co</div><div class="brand-tag">Luxury Apparel · Custom Theme</div></div></div>
+      <div class="brand"><div class="brand-dot"></div><div><div class="brand-name">jungmaven.com</div><div class="brand-tag">Premium Lifestyle · Bespoke Sections</div></div></div>
+      <div class="brand"><div class="brand-dot"></div><div><div class="brand-name">fieracosmetics.com</div><div class="brand-tag">Luxury Beauty · CRO Storefront</div></div></div>
+      <div class="brand"><div class="brand-dot"></div><div><div class="brand-name">allbirds.com</div><div class="brand-tag">Global DTC · Shopify + Next.js</div></div></div>
+      <div class="brand"><div class="brand-dot"></div><div><div class="brand-name">glossier.com</div><div class="brand-tag">Beauty Icon · Shopify + React</div></div></div>
+      <div class="brand"><div class="brand-dot"></div><div><div class="brand-name">happysocks.com</div><div class="brand-tag">Lifestyle Brand · Shopify + Klaviyo</div></div></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: CTA -->
+  <div class="slide" id="s4">
+    <div class="circle-deco"></div>
+    <div class="label">Let's work together</div>
+    <div class="h1">Let's build something<br><span class="gold">extraordinary.</span></div>
+    <div class="accent-line"></div>
+    <div class="sub">Are your motion specs already defined, or is that direction part of the scope? That single answer shapes the build plan — share the brief and I'll return a full section-by-section approach within 24 hours.</div>
+    <div class="cta-cards">
+      <div class="cta-card">
+        <h3>&#10022; 30-min free consultation</h3>
+        <p>Book a call to discuss your project scope before any commitment.</p>
+      </div>
+      <div class="cta-card">
+        <h3>&#10022; 2 months free maintenance</h3>
+        <p>Every build comes with full post-launch support included.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav" id="navDots"></div>
+<div class="arrows">
+  <button class="arr" id="prev" aria-label="Previous slide">&#8592;</button>
+  <button class="arr" id="next" aria-label="Next slide">&#8594;</button>
+</div>
+
+<script>
+const total = 5;
+let cur = 0;
+const slides = document.querySelectorAll('.slide');
+const numEl = document.getElementById('slideNum');
+const dotsEl = document.getElementById('navDots');
+for(let i=0;i<total;i++){
+  const d = document.createElement('div');
+  d.className = 'dot'+(i===0?' active':'');
+  d.onclick = ()=>go(i);
+  dotsEl.appendChild(d);
+}
+function go(n){
+  slides[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('active');
+  cur = (n+total)%total;
+  slides[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('active');
+  numEl.textContent = String(cur+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+}
+document.getElementById('next').onclick = ()=>go(cur+1);
+document.getElementById('prev').onclick = ()=>go(cur-1);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(cur-1);
+});
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50) go(dx<0?cur+1:cur-1);
+});
+</script>
+</body>
+</html>
